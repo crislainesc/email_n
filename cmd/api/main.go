@@ -31,7 +31,6 @@ func main() {
 		id, err := service.Create(request)
 
 		if err != nil {
-
 			if errors.Is(err, internalerrors.ErrorInternal) {
 				render.Status(r, 500)
 			} else {
