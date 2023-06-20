@@ -40,7 +40,7 @@ func main() {
 			return
 		}
 
-		render.Status(r, 202)
+		render.Status(r, 201)
 		render.JSON(w, r, map[string]string{"id": id})
 	})
 
