@@ -14,7 +14,7 @@ type Campaign struct {
 	ID        string    `validate:"required"`
 	Name      string    `validate:"min=5,max=24"`
 	Content   string    `validate:"required"`
-	Contacts  []Contact `validate:"min=5,max=1024"`
+	Contacts  []Contact `validate:"min=5,max=1024,dive"`
 	CreatedOn time.Time `validate:"min=1"`
 }
 
