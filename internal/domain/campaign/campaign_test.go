@@ -14,7 +14,7 @@ var (
 	now      = time.Now().Add(-time.Minute)
 )
 
-func TestNewCampaign_CreateCampaign(t *testing.T) {
+func Test_NewCampaign_CreateCampaign(t *testing.T) {
 	assert := assert.New(t)
 
 	campaign, _ := NewCampaign(name, content, contacts)
@@ -25,7 +25,7 @@ func TestNewCampaign_CreateCampaign(t *testing.T) {
 	assert.Equal(len(campaign.Contacts), len(contacts))
 }
 
-func TestNewCampaign_IDIsNotEmpty(t *testing.T) {
+func Test_NewCampaign_IDIsNotEmpty(t *testing.T) {
 	assert := assert.New(t)
 
 	campaign, _ := NewCampaign(name, content, contacts)
@@ -33,7 +33,7 @@ func TestNewCampaign_IDIsNotEmpty(t *testing.T) {
 	assert.NotEmpty(campaign.ID)
 }
 
-func TestNewCampaign_CreatedOn(t *testing.T) {
+func Test_NewCampaign_CreatedOn(t *testing.T) {
 	assert := assert.New(t)
 
 	campaign, _ := NewCampaign(name, content, contacts)
@@ -42,7 +42,7 @@ func TestNewCampaign_CreatedOn(t *testing.T) {
 	assert.Greater(campaign.CreatedOn, now)
 }
 
-func TestNewCampaign_MustValidateName(t *testing.T) {
+func Test_NewCampaign_MustValidateName(t *testing.T) {
 	assert := assert.New(t)
 
 	_, error := NewCampaign("", content, contacts)
@@ -50,7 +50,7 @@ func TestNewCampaign_MustValidateName(t *testing.T) {
 	assert.Equal("name is required", error.Error())
 }
 
-func TestNewCampaign_MustValidateContent(t *testing.T) {
+func Test_NewCampaign_MustValidateContent(t *testing.T) {
 	assert := assert.New(t)
 
 	_, error := NewCampaign(name, "", contacts)
@@ -58,7 +58,7 @@ func TestNewCampaign_MustValidateContent(t *testing.T) {
 	assert.Equal("content is required", error.Error())
 }
 
-func TestNewCampaign_MustValidateContacts(t *testing.T) {
+func Test_NewCampaign_MustValidateContacts(t *testing.T) {
 	assert := assert.New(t)
 
 	_, error := NewCampaign(name, content, []string{})
