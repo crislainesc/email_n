@@ -18,10 +18,10 @@ func main() {
 	router.Use(middleware.Logger)
 	router.Use(middleware.Recoverer)
 
-	campaignService := campaign.Service{
+	campaignService := campaign.ServiceImp{
 		Repository: &database.CampaignRepository{},
 	}
-	handler := endpoints.Handler{CampaignService: campaignService}
+	handler := endpoints.Handler{CampaignService: &campaignService}
 
 	router.Post("/campaigns", endpoints.HandlerError(handler.CampaignPost))
 	router.Get("/campaigns", endpoints.HandlerError(handler.CampaignGet))
