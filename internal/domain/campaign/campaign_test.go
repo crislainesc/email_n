@@ -9,9 +9,9 @@ import (
 )
 
 var (
-	name     = "Campaign Name"
-	content  = "Campaign Content"
-	contacts = []string{"email@example.com"}
+	name     = fake.Lorem().Text(10)
+	content  = fake.Lorem().Text(20)
+	contacts = []string{fake.Internet().Email()}
 	now      = time.Now().Add(-time.Minute)
 	fake     = faker.New()
 )
