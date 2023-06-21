@@ -35,6 +35,14 @@ func Test_NewCampaign_IDIsNotEmpty(t *testing.T) {
 	assert.NotEmpty(campaign.ID)
 }
 
+func Test_NewCampaign_StatusIsPending(t *testing.T) {
+	assert := assert.New(t)
+
+	campaign, _ := NewCampaign(name, content, contacts)
+	println(campaign.Status.String())
+	assert.Equal(campaign.Status.String(), Pending.String())
+}
+
 func Test_NewCampaign_CreatedOn(t *testing.T) {
 	assert := assert.New(t)
 
