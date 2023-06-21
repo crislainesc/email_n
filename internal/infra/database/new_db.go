@@ -3,18 +3,13 @@ package database
 import (
 	"os"
 
-	"github.com/joho/godotenv"
+	"emailn/internal/domain/campaign"
+
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
 
 func NewDatabase() *gorm.DB {
-	err := godotenv.Load(".env")
-
-	if err != nil {
-		panic("fail to read environment variables")
-	}
-
 	host := os.Getenv("POSTGRES_HOST")
 	user := os.Getenv("POSTGRES_USER")
 	password := os.Getenv("POSTGRES_USER_PASSWORD")
@@ -27,6 +22,8 @@ func NewDatabase() *gorm.DB {
 	if err != nil {
 		panic("fail to connect to database")
 	}
+
+	db.AutoMigrate(&campaign.Campaign{}, &campaign.Contact{})
 
 	return db
 }
