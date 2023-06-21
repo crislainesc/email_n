@@ -7,4 +7,4 @@ POST http://localhost:3000/campaigns
 }
 
 ###
-GET http://localhost:3000/campaigns
+GET http://localhost:3000/campaigns/{campaing_id}
