@@ -13,6 +13,8 @@ func (s Status) String() string {
 	switch s {
 	case Created:
 		return "Created"
+	case Pending:
+		return "Pending"
 	case Started:
 		return "Started"
 	case Done:
