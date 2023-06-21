@@ -7,6 +7,7 @@ import (
 
 type Service interface {
 	Create(newCampaign contract.NewCampaign) (string, error)
+	GetById(id string) (*contract.GetCampaignByIdResponse, error)
 }
 
 type ServiceImp struct {
@@ -28,4 +29,20 @@ func (s *ServiceImp) Create(newCampaign contract.NewCampaign) (string, error) {
 	}
 
 	return campaign.ID, nil
+}
+
+func (s *ServiceImp) GetById(id string) (*contract.GetCampaignByIdResponse, error) {
+
+	campaign, err := s.Repository.GetById(id)
+
+	if err != nil {
+		return nil, internalerrors.ErrorInternal
+	}
+
+	return &contract.GetCampaignByIdResponse{
+		ID:      campaign.ID,
+		Name:    campaign.Name,
+		Content: campaign.Content,
+		Status:  campaign.Status.String(),
+	}, nil
 }
