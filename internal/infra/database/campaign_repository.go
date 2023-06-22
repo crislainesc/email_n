@@ -26,12 +26,17 @@ func (c *CampaignRepository) Get() ([]campaign.Campaign, error) {
 func (c *CampaignRepository) GetById(id string) (*campaign.Campaign, error) {
 	var campaign campaign.Campaign
 
-	tx := c.Database.First(&campaign, "id = ?", id)
+	tx := c.Database.Preload("Contacts").First(&campaign, "id = ?", id)
 
 	return &campaign, tx.Error
 }
 
 func (c *CampaignRepository) Update(campaign *campaign.Campaign) error {
 	tx := c.Database.Save(campaign)
+	return tx.Error
+}
+
+func (c *CampaignRepository) Delete(campaign *campaign.Campaign) error {
+	tx := c.Database.Select("Contacts").Delete(campaign)
 	return tx.Error
 }
