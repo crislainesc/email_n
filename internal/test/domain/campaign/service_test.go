@@ -14,9 +14,10 @@ import (
 
 var (
 	newCampaign = contract.NewCampaignInput{
-		Name:    "TestCreateCampaign",
-		Content: "test content",
-		Emails:  []string{"email@example.com"},
+		Name:      "TestCreateCampaign",
+		Content:   "test content",
+		Emails:    []string{fake.Internet().Email()},
+		CreatedBy: fake.Internet().Email(),
 	}
 	service           = campaign.ServiceImp{}
 	errSomethingWrong = errors.New("something went wrong")
@@ -69,7 +70,7 @@ func Test_Create_ValidateRepositoryCreate(t *testing.T) {
 
 func Test_GetById_ReturnCampaign(t *testing.T) {
 	assert := assert.New(t)
-	campaignEntity, _ := campaign.NewCampaign(newCampaign.Name, newCampaign.Content, newCampaign.Emails)
+	campaignEntity, _ := campaign.NewCampaign(newCampaign.Name, newCampaign.Content, newCampaign.Emails, newCampaign.CreatedBy)
 	repositoryMock := new(internalmock.CampaignRepositoryMock)
 	repositoryMock.On("GetById", mock.MatchedBy(func(id string) bool {
 		return id == campaignEntity.ID
@@ -82,11 +83,12 @@ func Test_GetById_ReturnCampaign(t *testing.T) {
 	assert.Equal(campaignEntity.Name, campaignReturned.Name)
 	assert.Equal(campaignEntity.Content, campaignReturned.Content)
 	assert.Equal(campaignEntity.Status.String(), campaignReturned.Status)
+	assert.Equal(campaignEntity.CreatedBy, campaignReturned.CreatedBy)
 }
 
 func Test_GetById_ReturnErrorWhenSomethingWrongExist(t *testing.T) {
 	assert := assert.New(t)
-	campaignEntity, _ := campaign.NewCampaign(newCampaign.Name, newCampaign.Content, newCampaign.Emails)
+	campaignEntity, _ := campaign.NewCampaign(newCampaign.Name, newCampaign.Content, newCampaign.Emails, newCampaign.CreatedBy)
 	repositoryMock := new(internalmock.CampaignRepositoryMock)
 	repositoryMock.On("GetById", mock.Anything).Return(nil, errSomethingWrong)
 	service.Repository = repositoryMock
@@ -98,7 +100,7 @@ func Test_GetById_ReturnErrorWhenSomethingWrongExist(t *testing.T) {
 
 func Test_Delete_ReturnErrorWhenSomethingWrongExist(t *testing.T) {
 	assert := assert.New(t)
-	campaignEntity, _ := campaign.NewCampaign(newCampaign.Name, newCampaign.Content, newCampaign.Emails)
+	campaignEntity, _ := campaign.NewCampaign(newCampaign.Name, newCampaign.Content, newCampaign.Emails, newCampaign.CreatedBy)
 	repositoryMock := new(internalmock.CampaignRepositoryMock)
 	repositoryMock.On("GetById", mock.Anything).Return(nil, errSomethingWrong)
 	repositoryMock.On("Delete", mock.Anything).Return(errSomethingWrong)
@@ -111,7 +113,7 @@ func Test_Delete_ReturnErrorWhenSomethingWrongExist(t *testing.T) {
 
 func Test_Delete_ReturnErrorIfStatusIsNotPending(t *testing.T) {
 	assert := assert.New(t)
-	campaignEntity, _ := campaign.NewCampaign(newCampaign.Name, newCampaign.Content, newCampaign.Emails)
+	campaignEntity, _ := campaign.NewCampaign(newCampaign.Name, newCampaign.Content, newCampaign.Emails, newCampaign.CreatedBy)
 	repositoryMock := new(internalmock.CampaignRepositoryMock)
 	errorExpected := errors.New("campaign is not pending")
 	repositoryMock.On("GetById", mock.Anything).Return(&campaign.Campaign{}, nil)
@@ -125,7 +127,7 @@ func Test_Delete_ReturnErrorIfStatusIsNotPending(t *testing.T) {
 
 func Test_Delete_ReturnErrorWhenUpdateFail(t *testing.T) {
 	assert := assert.New(t)
-	campaignEntity, _ := campaign.NewCampaign(newCampaign.Name, newCampaign.Content, newCampaign.Emails)
+	campaignEntity, _ := campaign.NewCampaign(newCampaign.Name, newCampaign.Content, newCampaign.Emails, newCampaign.CreatedBy)
 	repositoryMock := new(internalmock.CampaignRepositoryMock)
 	repositoryMock.On("GetById", mock.Anything).Return(campaignEntity, nil)
 	repositoryMock.On("Delete", mock.Anything).Return(errSomethingWrong)
@@ -138,7 +140,7 @@ func Test_Delete_ReturnErrorWhenUpdateFail(t *testing.T) {
 
 func Test_Delete_ShouldReturnNilIfSuccess(t *testing.T) {
 	assert := assert.New(t)
-	campaignEntity, _ := campaign.NewCampaign(newCampaign.Name, newCampaign.Content, newCampaign.Emails)
+	campaignEntity, _ := campaign.NewCampaign(newCampaign.Name, newCampaign.Content, newCampaign.Emails, newCampaign.CreatedBy)
 	repositoryMock := new(internalmock.CampaignRepositoryMock)
 	repositoryMock.On("GetById", mock.Anything).Return(campaignEntity, nil)
 	repositoryMock.On("Delete", mock.Anything).Return(nil)
