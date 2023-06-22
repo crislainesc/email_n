@@ -22,6 +22,10 @@ type Campaign struct {
 	Status    Status    `gorm:"size:20"`
 }
 
+func (c *Campaign) Cancel() {
+	c.Status = Canceled
+}
+
 func NewCampaign(name string, content string, emails []string) (*Campaign, error) {
 
 	contacts := make([]Contact, len(emails))

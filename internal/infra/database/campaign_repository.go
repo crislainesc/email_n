@@ -30,3 +30,8 @@ func (c *CampaignRepository) GetById(id string) (*campaign.Campaign, error) {
 
 	return &campaign, tx.Error
 }
+
+func (c *CampaignRepository) Update(campaign *campaign.Campaign) error {
+	tx := c.Database.Save(campaign)
+	return tx.Error
+}

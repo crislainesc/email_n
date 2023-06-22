@@ -5,6 +5,7 @@ type Status uint8
 const (
 	Created Status = iota
 	Pending
+	Canceled
 	Started
 	Done
 )
@@ -15,6 +16,8 @@ func (s Status) String() string {
 		return "Created"
 	case Pending:
 		return "Pending"
+	case Canceled:
+		return "Canceled"
 	case Started:
 		return "Started"
 	case Done:
