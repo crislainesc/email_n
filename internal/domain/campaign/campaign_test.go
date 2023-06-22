@@ -39,7 +39,7 @@ func Test_NewCampaign_StatusIsPending(t *testing.T) {
 	assert := assert.New(t)
 
 	campaign, _ := NewCampaign(name, content, contacts)
-	println(campaign.Status.String())
+
 	assert.Equal(campaign.Status.String(), Pending.String())
 }
 
@@ -98,4 +98,14 @@ func Test_NewCampaign_MustValidateContacts(t *testing.T) {
 	_, error := NewCampaign(name, content, []string{"email_invalid"})
 
 	assert.Equal("email is invalid", error.Error())
+}
+
+func Test_Cancel_ShouldChangeStatusToCanceled(t *testing.T) {
+	assert := assert.New(t)
+
+	campaign, _ := NewCampaign(name, content, contacts)
+
+	campaign.Cancel()
+
+	assert.Equal(campaign.Status.String(), Canceled.String())
 }

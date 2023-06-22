@@ -48,7 +48,8 @@ var (
 		Content: "test content",
 		Emails:  []string{"email@example.com"},
 	}
-	service = ServiceImp{}
+	service           = ServiceImp{}
+	errSomethingWrong = errors.New("something went wrong")
 )
 
 func Test_Create_Campaign(t *testing.T) {
@@ -117,10 +118,63 @@ func Test_GetById_ReturnErrorWhenSomethingWrongExist(t *testing.T) {
 	assert := assert.New(t)
 	campaign, _ := NewCampaign(newCampaign.Name, newCampaign.Content, newCampaign.Emails)
 	repositoryMock := new(repositoryMock)
-	repositoryMock.On("GetById", mock.Anything).Return(nil, errors.New("something went wrong"))
+	repositoryMock.On("GetById", mock.Anything).Return(nil, errSomethingWrong)
 	service.Repository = repositoryMock
 
 	_, err := service.GetById(campaign.ID)
 
 	assert.Equal(err.Error(), internalerrors.ErrorInternal.Error())
+}
+
+func Test_Cancel_ReturnErrorWhenSomethingWrongExist(t *testing.T) {
+	assert := assert.New(t)
+	campaign, _ := NewCampaign(newCampaign.Name, newCampaign.Content, newCampaign.Emails)
+	repositoryMock := new(repositoryMock)
+	repositoryMock.On("GetById", mock.Anything).Return(nil, errSomethingWrong)
+	repositoryMock.On("Update", mock.Anything).Return(errSomethingWrong)
+	service.Repository = repositoryMock
+
+	err := service.Cancel(campaign.ID)
+
+	assert.Equal(err.Error(), internalerrors.ErrorInternal.Error())
+}
+
+func Test_Cancel_ReturnErrorIfStatusIsNotPending(t *testing.T) {
+	assert := assert.New(t)
+	campaign, _ := NewCampaign(newCampaign.Name, newCampaign.Content, newCampaign.Emails)
+	repositoryMock := new(repositoryMock)
+	errorExpected := errors.New("campaign is not pending")
+	repositoryMock.On("GetById", mock.Anything).Return(&Campaign{}, nil)
+	repositoryMock.On("Update", mock.Anything).Return(errorExpected)
+	service.Repository = repositoryMock
+
+	err := service.Cancel(campaign.ID)
+
+	assert.Equal(err.Error(), errorExpected.Error())
+}
+
+func Test_Cancel_ReturnErrorWhenUpdateFail(t *testing.T) {
+	assert := assert.New(t)
+	campaign, _ := NewCampaign(newCampaign.Name, newCampaign.Content, newCampaign.Emails)
+	repositoryMock := new(repositoryMock)
+	repositoryMock.On("GetById", mock.Anything).Return(campaign, nil)
+	repositoryMock.On("Update", mock.Anything).Return(errSomethingWrong)
+	service.Repository = repositoryMock
+
+	err := service.Cancel(campaign.ID)
+
+	assert.Equal(err.Error(), internalerrors.ErrorInternal.Error())
+}
+
+func Test_Cancel_ShouldReturnNilIfSuccess(t *testing.T) {
+	assert := assert.New(t)
+	campaign, _ := NewCampaign(newCampaign.Name, newCampaign.Content, newCampaign.Emails)
+	repositoryMock := new(repositoryMock)
+	repositoryMock.On("GetById", mock.Anything).Return(campaign, nil)
+	repositoryMock.On("Update", mock.Anything).Return(nil)
+	service.Repository = repositoryMock
+
+	err := service.Cancel(campaign.ID)
+
+	assert.Nil(err)
 }
