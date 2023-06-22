@@ -21,7 +21,7 @@ func Test_CampaignDelete_ShouldReturnTrueIfSuccess(t *testing.T) {
 
 	response, status, _ := handler.CampaignDelete(res, req)
 
-	assert.Equal(200, status)
+	assert.Equal(http.StatusOK, status)
 	assert.Equal(response.(bool), true)
 }
 
@@ -36,6 +36,6 @@ func Test_CampaignDelete_ShouldReturnErrorIfSomethingWrong(t *testing.T) {
 
 	_, status, err := handler.CampaignDelete(res, req)
 
-	assert.Equal(400, status)
+	assert.Equal(http.StatusBadRequest, status)
 	assert.Equal(err.Error(), errorExpected.Error())
 }

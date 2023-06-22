@@ -29,7 +29,7 @@ func Test_CampaignsGetById_ShouldReturnCampaign(t *testing.T) {
 
 	response, status, _ := handler.CampaignGetById(res, req)
 
-	assert.Equal(200, status)
+	assert.Equal(http.StatusOK, status)
 	assert.Equal(campaignResponse.ID, response.(*contract.GetCampaignByIdOutput).ID)
 	assert.Equal(campaignResponse.Name, response.(*contract.GetCampaignByIdOutput).Name)
 }
@@ -45,6 +45,6 @@ func Test_CampaignsGetById_WhenSomethingWrong(t *testing.T) {
 
 	_, status, err := handler.CampaignGetById(res, req)
 
-	assert.Equal(404, status)
+	assert.Equal(http.StatusNotFound, status)
 	assert.Equal(err.Error(), errorExpected.Error())
 }

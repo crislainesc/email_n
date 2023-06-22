@@ -42,7 +42,7 @@ func Test_CampaignsPost_ShouldSaveNewCampaign(t *testing.T) {
 
 	_, status, err := handler.CampaignPost(res, req)
 
-	assert.Equal(201, status)
+	assert.Equal(http.StatusCreated, status)
 	assert.Nil(err)
 }
 
@@ -58,6 +58,6 @@ func Test_CampaignsPost_ShouldInformError(t *testing.T) {
 
 	_, status, err := handler.CampaignPost(res, req)
 
-	assert.Equal(400, status)
+	assert.Equal(http.StatusBadRequest, status)
 	assert.NotNil(err)
 }

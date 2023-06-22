@@ -10,9 +10,5 @@ func (h *Handler) CampaignDelete(w http.ResponseWriter, r *http.Request) (interf
 	id := chi.URLParam(r, "campaign_id")
 	err := h.CampaignService.Delete(id)
 
-	if err != nil {
-		return nil, 400, err
-	}
-
-	return true, 200, nil
+	return true, http.StatusOK, err
 }

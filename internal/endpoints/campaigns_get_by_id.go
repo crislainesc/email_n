@@ -10,9 +10,5 @@ func (h *Handler) CampaignGetById(w http.ResponseWriter, r *http.Request) (inter
 	id := chi.URLParam(r, "campaign_id")
 	campaign, err := h.CampaignService.GetById(id)
 
-	if err != nil {
-		return nil, 404, err
-	}
-
-	return campaign, 200, nil
+	return campaign, http.StatusOK, err
 }
