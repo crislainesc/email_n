@@ -11,30 +11,30 @@ import (
 	"github.com/stretchr/testify/mock"
 )
 
-func Test_CampaignCancelPatch_ShouldReturnTrueIfSuccess(t *testing.T) {
+func Test_CampaignDelete_ShouldReturnTrueIfSuccess(t *testing.T) {
 	assert := assert.New(t)
 	service := new(internalmock.CampaignServiceMock)
-	service.On("Cancel", mock.Anything).Return(nil)
+	service.On("Delete", mock.Anything).Return(nil)
 	handler := Handler{CampaignService: service}
 	req, _ := http.NewRequest("PATCH", "/campaigns/1", nil)
 	res := httptest.NewRecorder()
 
-	response, status, _ := handler.CampaignCancelPatch(res, req)
+	response, status, _ := handler.CampaignDelete(res, req)
 
 	assert.Equal(200, status)
-	assert.Equal(response, true)
+	assert.Equal(response.(bool), true)
 }
 
-func Test_CampaignCancelPatch_ShouldReturnErrorIfSomethingWrong(t *testing.T) {
+func Test_CampaignDelete_ShouldReturnErrorIfSomethingWrong(t *testing.T) {
 	assert := assert.New(t)
 	service := new(internalmock.CampaignServiceMock)
 	errorExpected := errors.New("something wrong")
-	service.On("Cancel", mock.Anything).Return(errorExpected)
+	service.On("Delete", mock.Anything).Return(errorExpected)
 	handler := Handler{CampaignService: service}
 	req, _ := http.NewRequest("PATCH", "/campaigns/1", nil)
 	res := httptest.NewRecorder()
 
-	_, status, err := handler.CampaignCancelPatch(res, req)
+	_, status, err := handler.CampaignDelete(res, req)
 
 	assert.Equal(400, status)
 	assert.Equal(err.Error(), errorExpected.Error())

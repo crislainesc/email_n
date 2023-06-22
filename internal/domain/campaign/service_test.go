@@ -42,6 +42,11 @@ func (r *repositoryMock) Update(campaign *Campaign) error {
 	return args.Error(0)
 }
 
+func (r *repositoryMock) Delete(campaign *Campaign) error {
+	args := r.Called(campaign)
+	return args.Error(0)
+}
+
 var (
 	newCampaign = contract.NewCampaignInput{
 		Name:    "TestCreateCampaign",
@@ -175,6 +180,59 @@ func Test_Cancel_ShouldReturnNilIfSuccess(t *testing.T) {
 	service.Repository = repositoryMock
 
 	err := service.Cancel(campaign.ID)
+
+	assert.Nil(err)
+}
+
+func Test_Delete_ReturnErrorWhenSomethingWrongExist(t *testing.T) {
+	assert := assert.New(t)
+	campaign, _ := NewCampaign(newCampaign.Name, newCampaign.Content, newCampaign.Emails)
+	repositoryMock := new(repositoryMock)
+	repositoryMock.On("GetById", mock.Anything).Return(nil, errSomethingWrong)
+	repositoryMock.On("Update", mock.Anything).Return(errSomethingWrong)
+	service.Repository = repositoryMock
+
+	err := service.Delete(campaign.ID)
+
+	assert.Equal(err.Error(), internalerrors.ErrorInternal.Error())
+}
+
+func Test_Delete_ReturnErrorIfStatusIsNotPending(t *testing.T) {
+	assert := assert.New(t)
+	campaign, _ := NewCampaign(newCampaign.Name, newCampaign.Content, newCampaign.Emails)
+	repositoryMock := new(repositoryMock)
+	errorExpected := errors.New("campaign is not pending")
+	repositoryMock.On("GetById", mock.Anything).Return(&Campaign{}, nil)
+	repositoryMock.On("Update", mock.Anything).Return(errorExpected)
+	service.Repository = repositoryMock
+
+	err := service.Delete(campaign.ID)
+
+	assert.Equal(err.Error(), errorExpected.Error())
+}
+
+func Test_Delete_ReturnErrorWhenUpdateFail(t *testing.T) {
+	assert := assert.New(t)
+	campaign, _ := NewCampaign(newCampaign.Name, newCampaign.Content, newCampaign.Emails)
+	repositoryMock := new(repositoryMock)
+	repositoryMock.On("GetById", mock.Anything).Return(campaign, nil)
+	repositoryMock.On("Update", mock.Anything).Return(errSomethingWrong)
+	service.Repository = repositoryMock
+
+	err := service.Delete(campaign.ID)
+
+	assert.Equal(err.Error(), internalerrors.ErrorInternal.Error())
+}
+
+func Test_Delete_ShouldReturnNilIfSuccess(t *testing.T) {
+	assert := assert.New(t)
+	campaign, _ := NewCampaign(newCampaign.Name, newCampaign.Content, newCampaign.Emails)
+	repositoryMock := new(repositoryMock)
+	repositoryMock.On("GetById", mock.Anything).Return(campaign, nil)
+	repositoryMock.On("Update", mock.Anything).Return(nil)
+	service.Repository = repositoryMock
+
+	err := service.Delete(campaign.ID)
 
 	assert.Nil(err)
 }
