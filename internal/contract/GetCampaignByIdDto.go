@@ -6,4 +6,5 @@ type GetCampaignByIdOutput struct {
 	Content              string
 	Status               string
 	AmountOfEmailsToSend int
+	CreatedBy            string
 }
