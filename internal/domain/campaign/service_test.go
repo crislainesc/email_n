@@ -20,8 +20,13 @@ func (r *repositoryMock) Save(campaign *Campaign) error {
 }
 
 func (r *repositoryMock) Get() ([]Campaign, error) {
-	// args := r.Called(campaign)
-	return nil, nil
+	args := r.Called()
+
+	if args.Error(1) != nil {
+		return nil, args.Error(1)
+	}
+
+	return args.Get(0).([]Campaign), nil
 }
 
 func (r *repositoryMock) GetById(id string) (*Campaign, error) {
@@ -30,6 +35,11 @@ func (r *repositoryMock) GetById(id string) (*Campaign, error) {
 		return nil, args.Error(1)
 	}
 	return args.Get(0).(*Campaign), nil
+}
+
+func (r *repositoryMock) Update(campaign *Campaign) error {
+	args := r.Called(campaign)
+	return args.Error(0)
 }
 
 var (
