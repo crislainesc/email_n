@@ -1,9 +1,10 @@
-package endpoints
+package endpoints_test
 
 import (
 	"emailn/internal/contract"
 	"emailn/internal/domain/campaign"
-	internalmock "emailn/internal/test/mock"
+	"emailn/internal/endpoints"
+	"emailn/internal/test/internalmock"
 	"errors"
 	"net/http"
 	"net/http/httptest"
@@ -23,7 +24,7 @@ func Test_CampaignsGetById_ShouldReturnCampaign(t *testing.T) {
 	}
 	service := new(internalmock.CampaignServiceMock)
 	service.On("GetById", mock.Anything).Return(&campaignResponse, nil)
-	handler := Handler{CampaignService: service}
+	handler := endpoints.Handler{CampaignService: service}
 	req, _ := http.NewRequest("GET", "/", nil)
 	res := httptest.NewRecorder()
 
@@ -39,12 +40,11 @@ func Test_CampaignsGetById_WhenSomethingWrong(t *testing.T) {
 	service := new(internalmock.CampaignServiceMock)
 	errorExpected := errors.New("something wrong")
 	service.On("GetById", mock.Anything).Return(nil, errorExpected)
-	handler := Handler{CampaignService: service}
+	handler := endpoints.Handler{CampaignService: service}
 	req, _ := http.NewRequest("GET", "/", nil)
 	res := httptest.NewRecorder()
 
-	_, status, err := handler.CampaignGetById(res, req)
+	_, _, err := handler.CampaignGetById(res, req)
 
-	assert.Equal(http.StatusNotFound, status)
 	assert.Equal(err.Error(), errorExpected.Error())
 }

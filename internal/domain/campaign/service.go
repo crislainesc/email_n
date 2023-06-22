@@ -2,14 +2,13 @@ package campaign
 
 import (
 	"emailn/internal/contract"
-	internalerrors "emailn/internal/errors"
+	"emailn/internal/internalerrors"
 	"errors"
 )
 
 type Service interface {
 	Create(newCampaign contract.NewCampaignInput) (string, error)
 	GetById(id string) (*contract.GetCampaignByIdOutput, error)
-	Cancel(id string) error
 	Delete(id string) error
 }
 
@@ -25,7 +24,7 @@ func (s *ServiceImp) Create(newCampaign contract.NewCampaignInput) (string, erro
 		return "", err
 	}
 
-	err = s.Repository.Save(campaign)
+	err = s.Repository.Create(campaign)
 
 	if err != nil {
 		return "", internalerrors.ErrorInternal
@@ -49,28 +48,6 @@ func (s *ServiceImp) GetById(id string) (*contract.GetCampaignByIdOutput, error)
 		Status:               campaign.Status.String(),
 		AmountOfEmailsToSend: len(campaign.Contacts),
 	}, nil
-}
-
-func (s *ServiceImp) Cancel(id string) error {
-
-	campaign, err := s.Repository.GetById(id)
-
-	if err != nil {
-		return internalerrors.ProcessErrorToReturn(err)
-	}
-
-	if campaign.Status != Pending {
-		return errors.New("campaign is not pending")
-	}
-
-	campaign.Cancel()
-	err = s.Repository.Update(campaign)
-
-	if err != nil {
-		return internalerrors.ErrorInternal
-	}
-
-	return nil
 }
 
 func (s *ServiceImp) Delete(id string) error {

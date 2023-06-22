@@ -1,7 +1,7 @@
 package endpoints
 
 import (
-	internalerrors "emailn/internal/errors"
+	"emailn/internal/internalerrors"
 	"errors"
 	"net/http"
 
@@ -30,6 +30,8 @@ func HandlerError(endpointFunc EndpointFunc) http.HandlerFunc {
 		render.Status(r, status)
 		if obj != nil {
 			render.JSON(w, r, obj)
+		} else {
+			render.JSON(w, r, true)
 		}
 	})
 }

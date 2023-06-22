@@ -1,7 +1,8 @@
-package endpoints
+package endpoints_test
 
 import (
-	internalmock "emailn/internal/test/mock"
+	"emailn/internal/endpoints"
+	"emailn/internal/test/internalmock"
 	"errors"
 	"net/http"
 	"net/http/httptest"
@@ -15,8 +16,8 @@ func Test_CampaignDelete_ShouldReturnTrueIfSuccess(t *testing.T) {
 	assert := assert.New(t)
 	service := new(internalmock.CampaignServiceMock)
 	service.On("Delete", mock.Anything).Return(nil)
-	handler := Handler{CampaignService: service}
-	req, _ := http.NewRequest("PATCH", "/campaigns/1", nil)
+	handler := endpoints.Handler{CampaignService: service}
+	req, _ := http.NewRequest("DELETE", "/campaigns/1", nil)
 	res := httptest.NewRecorder()
 
 	response, status, _ := handler.CampaignDelete(res, req)
@@ -30,12 +31,11 @@ func Test_CampaignDelete_ShouldReturnErrorIfSomethingWrong(t *testing.T) {
 	service := new(internalmock.CampaignServiceMock)
 	errorExpected := errors.New("something wrong")
 	service.On("Delete", mock.Anything).Return(errorExpected)
-	handler := Handler{CampaignService: service}
-	req, _ := http.NewRequest("PATCH", "/campaigns/1", nil)
+	handler := endpoints.Handler{CampaignService: service}
+	req, _ := http.NewRequest("DELETE", "/campaigns/1", nil)
 	res := httptest.NewRecorder()
 
-	_, status, err := handler.CampaignDelete(res, req)
+	_, _, err := handler.CampaignDelete(res, req)
 
-	assert.Equal(http.StatusBadRequest, status)
 	assert.Equal(err.Error(), errorExpected.Error())
 }

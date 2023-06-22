@@ -1,7 +1,7 @@
 package campaign
 
 import (
-	internalerrors "emailn/internal/errors"
+	"emailn/internal/internalerrors"
 	"time"
 
 	"github.com/rs/xid"

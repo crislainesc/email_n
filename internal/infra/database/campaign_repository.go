@@ -10,7 +10,7 @@ type CampaignRepository struct {
 	Database *gorm.DB
 }
 
-func (c *CampaignRepository) Save(campaign *campaign.Campaign) error {
+func (c *CampaignRepository) Create(campaign *campaign.Campaign) error {
 	tx := c.Database.Create(campaign)
 	return tx.Error
 }

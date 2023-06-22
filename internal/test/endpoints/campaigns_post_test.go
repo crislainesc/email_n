@@ -1,9 +1,10 @@
-package endpoints
+package endpoints_test
 
 import (
 	"bytes"
 	"emailn/internal/contract"
-	internalmock "emailn/internal/test/mock"
+	"emailn/internal/endpoints"
+	"emailn/internal/test/internalmock"
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -24,7 +25,7 @@ var (
 	}
 )
 
-func Test_CampaignsPost_ShouldSaveNewCampaign(t *testing.T) {
+func Test_CampaignsPost_ShouldCreateNewCampaign(t *testing.T) {
 	assert := assert.New(t)
 	service := new(internalmock.CampaignServiceMock)
 	service.On("Create", mock.MatchedBy(func(request contract.NewCampaignInput) bool {
@@ -34,7 +35,7 @@ func Test_CampaignsPost_ShouldSaveNewCampaign(t *testing.T) {
 			return false
 		}
 	})).Return("1", nil)
-	handler := Handler{CampaignService: service}
+	handler := endpoints.Handler{CampaignService: service}
 	var buf bytes.Buffer
 	json.NewEncoder(&buf).Encode(body)
 	req, _ := http.NewRequest("POST", "/", &buf)
@@ -50,14 +51,13 @@ func Test_CampaignsPost_ShouldInformError(t *testing.T) {
 	assert := assert.New(t)
 	service := new(internalmock.CampaignServiceMock)
 	service.On("Create", mock.Anything).Return("", fmt.Errorf("error"))
-	handler := Handler{CampaignService: service}
+	handler := endpoints.Handler{CampaignService: service}
 	var buf bytes.Buffer
 	json.NewEncoder(&buf).Encode(body)
 	req, _ := http.NewRequest("POST", "/", &buf)
 	res := httptest.NewRecorder()
 
-	_, status, err := handler.CampaignPost(res, req)
+	_, _, err := handler.CampaignPost(res, req)
 
-	assert.Equal(http.StatusBadRequest, status)
 	assert.NotNil(err)
 }

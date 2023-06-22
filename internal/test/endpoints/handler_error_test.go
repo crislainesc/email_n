@@ -1,7 +1,8 @@
-package endpoints
+package endpoints_test
 
 import (
-	internalerrors "emailn/internal/errors"
+	"emailn/internal/endpoints"
+	"emailn/internal/internalerrors"
 	"encoding/json"
 	"errors"
 	"net/http"
@@ -16,7 +17,7 @@ func Test_HandlerError_WhenEndpointsReturnsInternalError(t *testing.T) {
 	endpoint := func(w http.ResponseWriter, r *http.Request) (interface{}, int, error) {
 		return nil, 0, internalerrors.ErrorInternal
 	}
-	handlerFunc := HandlerError(endpoint)
+	handlerFunc := endpoints.HandlerError(endpoint)
 
 	req, _ := http.NewRequest("GET", "/", nil)
 	res := httptest.NewRecorder()
@@ -32,7 +33,7 @@ func Test_HandlerError_WhenEndpointsReturnsDomainError(t *testing.T) {
 	endpoint := func(w http.ResponseWriter, r *http.Request) (interface{}, int, error) {
 		return nil, 0, errors.New("domain error")
 	}
-	handlerFunc := HandlerError(endpoint)
+	handlerFunc := endpoints.HandlerError(endpoint)
 
 	req, _ := http.NewRequest("GET", "/", nil)
 	res := httptest.NewRecorder()
@@ -52,7 +53,7 @@ func Test_HandlerError_WhenEndpointsReturnsObjAndStatus(t *testing.T) {
 	endpoint := func(w http.ResponseWriter, r *http.Request) (interface{}, int, error) {
 		return objExpected, 201, nil
 	}
-	handlerFunc := HandlerError(endpoint)
+	handlerFunc := endpoints.HandlerError(endpoint)
 	req, _ := http.NewRequest("GET", "/", nil)
 	res := httptest.NewRecorder()
 
