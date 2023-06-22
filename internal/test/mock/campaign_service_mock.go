@@ -10,17 +10,17 @@ type CampaignServiceMock struct {
 	mock.Mock
 }
 
-func (s *CampaignServiceMock) Create(newCampaign contract.NewCampaign) (string, error) {
+func (s *CampaignServiceMock) Create(newCampaign contract.NewCampaignInput) (string, error) {
 	args := s.Called(newCampaign)
 	return args.String(0), args.Error(1)
 }
 
-func (s *CampaignServiceMock) GetById(id string) (*contract.GetCampaignByIdResponse, error) {
+func (s *CampaignServiceMock) GetById(id string) (*contract.GetCampaignByIdOutput, error) {
 	args := s.Called(id)
 
 	if args.Error(1) != nil {
 		return nil, args.Error(1)
 	}
 
-	return args.Get(0).(*contract.GetCampaignByIdResponse), nil
+	return args.Get(0).(*contract.GetCampaignByIdOutput), nil
 }

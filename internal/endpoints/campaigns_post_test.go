@@ -3,6 +3,7 @@ package endpoints
 import (
 	"bytes"
 	"emailn/internal/contract"
+	internalmock "emailn/internal/test/mock"
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -16,31 +17,17 @@ import (
 
 var (
 	fake = faker.New()
-	body = contract.NewCampaign{
+	body = contract.NewCampaignInput{
 		Name:    fake.Lorem().Text(10),
 		Content: fake.Lorem().Text(20),
 		Emails:  []string{fake.Internet().Email(), fake.Internet().Email()},
 	}
 )
 
-type serviceMock struct {
-	mock.Mock
-}
-
-func (s *serviceMock) Create(newCampaign contract.NewCampaign) (string, error) {
-	args := s.Called(newCampaign)
-	return args.String(0), args.Error(1)
-}
-
-func (s *serviceMock) GetById(id string) (*contract.GetCampaignByIdResponse, error) {
-	// args := s.Called(id)
-	return nil, nil
-}
-
 func Test_CampaignsPost_ShouldSaveNewCampaign(t *testing.T) {
 	assert := assert.New(t)
-	service := &serviceMock{}
-	service.On("Create", mock.MatchedBy(func(request contract.NewCampaign) bool {
+	service := new(internalmock.CampaignServiceMock)
+	service.On("Create", mock.MatchedBy(func(request contract.NewCampaignInput) bool {
 		if request.Name == body.Name && request.Content == body.Content && len(request.Emails) == len(body.Emails) {
 			return true
 		} else {
@@ -61,8 +48,7 @@ func Test_CampaignsPost_ShouldSaveNewCampaign(t *testing.T) {
 
 func Test_CampaignsPost_ShouldInformError(t *testing.T) {
 	assert := assert.New(t)
-
-	service := &serviceMock{}
+	service := new(internalmock.CampaignServiceMock)
 	service.On("Create", mock.Anything).Return("", fmt.Errorf("error"))
 	handler := Handler{CampaignService: service}
 	var buf bytes.Buffer

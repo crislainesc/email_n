@@ -8,7 +8,7 @@ import (
 )
 
 func (h *Handler) CampaignPost(w http.ResponseWriter, r *http.Request) (interface{}, int, error) {
-	request := contract.NewCampaign{}
+	request := contract.NewCampaignInput{}
 	render.DecodeJSON(r.Body, &request)
 	id, err := h.CampaignService.Create(request)
 

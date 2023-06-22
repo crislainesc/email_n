@@ -1,6 +1,6 @@
 package contract
 
-type GetCampaignByIdResponse struct {
+type GetCampaignByIdOutput struct {
 	ID      string
 	Name    string
 	Content string

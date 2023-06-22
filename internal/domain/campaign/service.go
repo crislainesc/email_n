@@ -6,15 +6,15 @@ import (
 )
 
 type Service interface {
-	Create(newCampaign contract.NewCampaign) (string, error)
-	GetById(id string) (*contract.GetCampaignByIdResponse, error)
+	Create(newCampaign contract.NewCampaignInput) (string, error)
+	GetById(id string) (*contract.GetCampaignByIdOutput, error)
 }
 
 type ServiceImp struct {
 	Repository Repository
 }
 
-func (s *ServiceImp) Create(newCampaign contract.NewCampaign) (string, error) {
+func (s *ServiceImp) Create(newCampaign contract.NewCampaignInput) (string, error) {
 
 	campaign, err := NewCampaign(newCampaign.Name, newCampaign.Content, newCampaign.Emails)
 
@@ -31,7 +31,7 @@ func (s *ServiceImp) Create(newCampaign contract.NewCampaign) (string, error) {
 	return campaign.ID, nil
 }
 
-func (s *ServiceImp) GetById(id string) (*contract.GetCampaignByIdResponse, error) {
+func (s *ServiceImp) GetById(id string) (*contract.GetCampaignByIdOutput, error) {
 
 	campaign, err := s.Repository.GetById(id)
 
@@ -39,7 +39,7 @@ func (s *ServiceImp) GetById(id string) (*contract.GetCampaignByIdResponse, erro
 		return nil, internalerrors.ErrorInternal
 	}
 
-	return &contract.GetCampaignByIdResponse{
+	return &contract.GetCampaignByIdOutput{
 		ID:      campaign.ID,
 		Name:    campaign.Name,
 		Content: campaign.Content,

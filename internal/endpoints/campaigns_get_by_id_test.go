@@ -15,7 +15,7 @@ import (
 
 func Test_CampaignsGetById_ShouldReturnCampaign(t *testing.T) {
 	assert := assert.New(t)
-	campaignResponse := contract.GetCampaignByIdResponse{
+	campaignResponse := contract.GetCampaignByIdOutput{
 		ID:      "1",
 		Name:    fake.Lorem().Text(10),
 		Content: fake.Lorem().Text(20),
@@ -30,8 +30,8 @@ func Test_CampaignsGetById_ShouldReturnCampaign(t *testing.T) {
 	response, status, _ := handler.CampaignGetById(res, req)
 
 	assert.Equal(200, status)
-	assert.Equal(campaignResponse.ID, response.(*contract.GetCampaignByIdResponse).ID)
-	assert.Equal(campaignResponse.Name, response.(*contract.GetCampaignByIdResponse).Name)
+	assert.Equal(campaignResponse.ID, response.(*contract.GetCampaignByIdOutput).ID)
+	assert.Equal(campaignResponse.Name, response.(*contract.GetCampaignByIdOutput).Name)
 }
 
 func Test_CampaignsGetById_WhenSomethingWrong(t *testing.T) {

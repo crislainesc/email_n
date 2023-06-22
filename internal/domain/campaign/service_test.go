@@ -33,7 +33,7 @@ func (r *repositoryMock) GetById(id string) (*Campaign, error) {
 }
 
 var (
-	newCampaign = contract.NewCampaign{
+	newCampaign = contract.NewCampaignInput{
 		Name:    "TestCreateCampaign",
 		Content: "test content",
 		Emails:  []string{"email@example.com"},
@@ -55,7 +55,7 @@ func Test_Create_Campaign(t *testing.T) {
 func Test_Create_ValidateDomainError(t *testing.T) {
 	assert := assert.New(t)
 
-	_, err := service.Create(contract.NewCampaign{})
+	_, err := service.Create(contract.NewCampaignInput{})
 
 	assert.NotNil(err)
 	assert.Equal("name is required with min 5", err.Error())
