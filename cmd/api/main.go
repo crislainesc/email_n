@@ -73,9 +73,9 @@ func main() {
 	router.Route("/campaigns", func(r chi.Router) {
 		r.Use(endpoints.Auth)
 
-		router.Post("/", endpoints.HandlerError(handler.CampaignPost))
-		router.Get("/{campaign_id}", endpoints.HandlerError(handler.CampaignGetById))
-		router.Delete("/delete/{campaign_id}", endpoints.HandlerError(handler.CampaignDelete))
+		r.Post("/", endpoints.HandlerError(handler.CampaignPost))
+		r.Get("/{campaign_id}", endpoints.HandlerError(handler.CampaignGetById))
+		r.Delete("/delete/{campaign_id}", endpoints.HandlerError(handler.CampaignDelete))
 	})
 
 	http.ListenAndServe(":3000", router)
